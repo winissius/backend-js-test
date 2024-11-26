@@ -4,7 +4,7 @@ import routes from "./src/routes/postsRoutes.js";
 
 // Create an instance of the Express application
 const app = express();
-
+app.use(express.static("uploads"))
 routes(app);
 
 // Start the server and listen for incoming requests on port 3000

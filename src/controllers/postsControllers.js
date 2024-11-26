@@ -1,5 +1,6 @@
 import fs from "fs"
-import { getAllPosts, createPost } from "../models/postsModels.js"
+import { getAllPosts, createPost, updateExistentPost } from "../models/postsModels.js"
+import generateDescription from "../services/geminiService.js"
 
 export async function listPosts (req, res)  
 {
@@ -31,6 +32,27 @@ export async function uploadImage(req, res) {
         const insertedId = createdPost.insertedId;
         const updatedImage = `uploads/${insertedId}.png`
         fs.renameSync(req.file.path, updatedImage)
+        res.status(200).json(createdPost);
+    } catch (error) { 
+        console.error(error.message)
+        res.status(500).json({"Error":"Error in requisition"})
+    }
+}
+
+export async function updatePost(req, res) {
+    const id = req.params.id;
+    const urlImage = `http://localhost:3000/${id}.png`
+        try {
+        const imgBuffer = fs.readFileSync(`uploads/${id}.png`)
+        const description = await generateDescription(imgBuffer)
+
+        const post = {
+            imgURL: urlImage,
+            description: description,
+            alt: req.body.alt
+        }
+
+        const createdPost = await updateExistentPost(newPost);
         res.status(200).json(createdPost);
     } catch (error) { 
         console.error(error.message)

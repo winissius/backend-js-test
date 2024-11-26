@@ -1,4 +1,5 @@
 import connectDB from "../config/dbConfig.js";
+import { ObjectId } from "mongodb";
 
 // Establish a connection to the MongoDB database using the provided connection string
 const connection = await connectDB(process.env.STRING_CONNECTION);
@@ -19,4 +20,11 @@ export async function getAllPosts() {
     const db = connection.db("social-backend");
     const collection = db.collection("posts");
     return collection.insertOne(newPost);
+  }
+
+  export async function updateExistentPost(id, newPost) {
+    const db = connection.db("social-backend");
+    const collection = db.collection("posts");
+    const objID = ObjectId.createFromHexString(id);
+    return collection.updateOne({_id: new ObjectId(objID)}, {$set:newPost});
   }
