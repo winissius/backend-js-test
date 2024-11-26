@@ -14,3 +14,9 @@ export async function getAllPosts() {
     // Find all documents in the collection and return them as an array
     return collection.find().toArray();
   }
+
+  export async function createPost(newPost) {
+    const db = connection.db("social-backend");
+    const collection = db.collection("posts");
+    return collection.insertOne(newPost);
+  }
